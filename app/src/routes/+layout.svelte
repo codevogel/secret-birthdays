@@ -12,7 +12,7 @@
 	<!-- Grid Columns -->
 	<div class="grid grid-cols-1">
 		<!-- Main Content -->
-		<main class="space-y-4 p-4 flex flex-col items-center justify-center">
+		<main class="space-y-4">
 			{@render children()}
 		</main>
 	</div>
