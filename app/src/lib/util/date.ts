@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 export function getDateSince(start: Date, daysSince: number): Date {
-	return moment(start).add(daysSince, 'days').toDate();
+	return moment(start).startOf('day').add(daysSince, 'days').toDate();
 }
 
 export function daysToYears(days: number): number {
@@ -17,13 +17,17 @@ export function toLegibleDate(date: Date): string {
 }
 
 export function daysSince(date: Date): number {
-   return moment().diff(moment(date), 'days');
+	return moment().startOf('day').diff(moment(date).startOf('day'), 'days');
+}
+
+export function daysDiff(from: Date, to: Date) {
+	return moment(to).startOf('day').diff(moment(from).startOf('day'), 'days', true);
 }
 
 export function addDays(date: Date, days: number): Date {
-   return moment(date).add(days, 'days').toDate();
+	return moment(date).startOf('day').add(days, 'days').toDate();
 }
 
 export function subtractDays(date: Date, days: number): Date {
-   return moment(date).subtract(days, 'days').toDate();
+	return moment(date).startOf('day').subtract(days, 'days').toDate();
 }
