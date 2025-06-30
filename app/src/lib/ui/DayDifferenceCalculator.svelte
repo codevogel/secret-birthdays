@@ -36,74 +36,66 @@
 		if (isNaN(daysSinceOrTo)) return NaN;
 		return Math.abs(daysSinceOrTo);
 	});
-
-	let hasBeenOrhaveBeenOrIsOrAre: string | null = $derived.by(() => {
-		if (isNaN(daysSinceOrTo)) return null;
-		if (Math.abs(daysSinceOrTo) === 1) {
-			return daysSinceOrTo < 0 ? 'has been' : 'is';
-		}
-		return daysSinceOrTo < 0 ? 'have been' : 'are';
-	});
 </script>
 
-	<Card>
-		{#snippet header()}
-			Day difference calculator
-		{/snippet}
-		{#snippet article()}
-			<form class="grid grid-cols-1 gap-y-4">
+<Card>
+	{#snippet header()}
+		Day difference calculator
+	{/snippet}
+	{#snippet article()}
+		<form class="grid grid-cols-1 gap-y-4">
+			<span class="flex flex-row items-center gap-x-4">
+				<label for="calculateFromNow"
+					>Calculate <span class="text-primary-500">from</span> today:</label
+				>
+				<input type="checkbox" id="calculateFromNow" bind:checked={calculateFromNow} />
+			</span>
+			<span class="flex flex-row items-center gap-x-4">
+				<label for="calculateFromNow">Include start day:</label>
+				<input type="checkbox" id="calculateFromNow" bind:checked={calculateInclusive} />
+			</span>
+			{#if !calculateFromNow}
 				<span class="flex flex-row items-center gap-x-4">
-					<label for="calculateFromNow"
-						>Calculate <span class="text-primary-500">from</span> today:</label
-					>
-					<input type="checkbox" id="calculateFromNow" bind:checked={calculateFromNow} />
-				</span>
-				<span class="flex flex-row items-center gap-x-4">
-					<label for="calculateFromNow">Include start day:</label>
-					<input type="checkbox" id="calculateFromNow" bind:checked={calculateInclusive} />
-				</span>
-				{#if !calculateFromNow}
-					<span class="flex flex-row items-center gap-x-4">
-						<label for="selectedFromDate"
-							>Select <span class="text-primary-500">from</span>
-							date:</label
-						>
-						<input
-							type="date"
-							id="selectedFromDate"
-							bind:value={dateSelectionFromValue}
-							class="text-primary-500"
-						/>
-					</span>
-				{/if}
-
-				<span class="flex flex-row items-center gap-x-4">
-					<label for="selectedToDate"
-						>Select <span class="text-primary-500">to</span>
+					<label for="selectedFromDate"
+						>Select <span class="text-primary-500">from</span>
 						date:</label
 					>
 					<input
 						type="date"
-						id="selectedToDate"
-						bind:value={dateSelectionToValue}
+						id="selectedFromDate"
+						bind:value={dateSelectionFromValue}
 						class="text-primary-500"
 					/>
 				</span>
-			</form>
-			{#if (calculateFromNow && dateSelectedTo) || (!calculateFromNow && dateSelectedTo && dateSelectedFrom)}
-				<p>
-					There {hasBeenOrhaveBeenOrIsOrAre}
-					<span class="text-primary-500">{daysSinceOrToAbsolute}</span>
-					{dayOrDays}
-					from
-					<span class="text-primary-500">
-						{toLegibleDate(dateFrom!)}
-					</span>
-					to
-					<span class="text-primary-500">
-						{toLegibleDate(dateSelectedTo)}
-					</span>.
-				</p>
 			{/if}
-		{/snippet}
-	</Card>
+
+			<span class="flex flex-row items-center gap-x-4">
+				<label for="selectedToDate"
+					>Select <span class="text-primary-500">to</span>
+					date:</label
+				>
+				<input
+					type="date"
+					id="selectedToDate"
+					bind:value={dateSelectionToValue}
+					class="text-primary-500"
+				/>
+			</span>
+		</form>
+		{#if (calculateFromNow && dateSelectedTo) || (!calculateFromNow && dateSelectedTo && dateSelectedFrom)}
+			<p>
+				There is a difference of
+				<span class="text-primary-500">{daysSinceOrToAbsolute}</span>
+				{dayOrDays}
+				between
+				<span class="text-primary-500">
+					{toLegibleDate(dateFrom!)}
+				</span>
+				and
+				<span class="text-primary-500">
+					{toLegibleDate(dateSelectedTo)}
+				</span>.
+			</p>
+		{/if}
+	{/snippet}
+</Card>
