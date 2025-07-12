@@ -1,6 +1,6 @@
 import { toBinaryString } from '$lib/util/binary';
 import type { RequestHandler } from '@sveltejs/kit';
-import { error, json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import moment from 'moment';
 
 export const GET: RequestHandler = async ({ params }) => {
@@ -8,7 +8,7 @@ export const GET: RequestHandler = async ({ params }) => {
 	const birthdayParam: string = params.birthday!;
 
 	if (!YYYY_MM_DD_REGEX.test(birthdayParam)) {
-		throw error(400, 'Invalid date format. Expected format: YYYY-MM-DD');
+		return json({ error: 'Invalid date format. Expected format: YYYY-MM-DD' });
 	}
 
 	const birthday = new Date(birthdayParam);
@@ -23,7 +23,6 @@ export const GET: RequestHandler = async ({ params }) => {
 	return json({
 		birthday,
 		dayOffsets,
-		birthdays,
-		binaryStrings
+		birthdays
 	});
 };
