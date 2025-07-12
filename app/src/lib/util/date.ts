@@ -31,3 +31,19 @@ export function addDays(date: Date, days: number): Date {
 export function subtractDays(date: Date, days: number): Date {
 	return moment(date).startOf('day').subtract(days, 'days').toDate();
 }
+
+export function isInSameMonth(a: Date, b: Date): boolean {
+	return a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear();
+}
+
+export function isOnSameDay(a: Date, b: Date): boolean {
+	return (
+		a.getDate() === b.getDate() &&
+		a.getMonth() === b.getMonth() &&
+		a.getFullYear() === b.getFullYear()
+	);
+}
+
+export function getStartDayOfMonth(date: Date): Date {
+	return moment(date).startOf('month').startOf('day').toDate();
+}
