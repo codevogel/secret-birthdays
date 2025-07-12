@@ -1,18 +1,62 @@
 <script lang="ts">
-	import { getDateSince } from '$lib/util/date';
-	import TimeLine, { type TimeLineEvent } from '$lib/ui/TimeLine.svelte';
+	import Calendar from '$lib/ui/Calendar.svelte';
+	import type { CalendarEvent } from '$lib/types/CalendarEvent';
+	import type { ChangeEventHandler } from 'svelte/elements';
+	import type { BinaryBirthdayData } from '$lib/types/BirthdayData';
+	import { isOnSameDay } from '$lib/util/date';
+	import { page } from '$app/state';
 
-	let daysFromNow: number[] = $state([0, 1, 1, 500, 1000, 1000, 1005]);
+	let { data } = $props();
 
-	let events: TimeLineEvent[] = $derived.by(() => {
-		return daysFromNow.map((days) => {
+	let birthdayInputString: string = $state(page.url.searchParams.get('birthday') || '');
+
+	let selectedDate: Date = $state(new Date());
+
+	let binaryBirthdayData: BinaryBirthdayData | null = $derived.by(() => {
+		return data.binaryBirthdayData;
+	});
+
+	let events: CalendarEvent[] = $derived.by(() => {
+		if (!binaryBirthdayData) {
+			return [];
+		}
+		return binaryBirthdayData.birthdays.map((birthday) => {
 			return {
-				date: getDateSince(new Date(), days),
-				title: `Binary Birthday`,
-				description: `You have been alive for ${days} days, which is a binary number!`
+				start: birthday,
+				title: birthday.toLocaleDateString()
 			};
 		});
 	});
+
+	const onDateChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+		e.currentTarget.form?.requestSubmit();
+	};
+
+	let eventOnSelectedDate: CalendarEvent | null = $derived.by(() => {
+		if (!binaryBirthdayData) {
+			return null;
+		}
+		return events.find((event) => isOnSameDay(event.start, selectedDate)) || null;
+	});
 </script>
 
-<TimeLine {events} />
+<form data-sveltekit-keepfocus>
+	<label for="birthday">Select your birthday:</label>
+	<input
+		class="text-primary-500"
+		type="date"
+		name="birthday"
+		onchange={onDateChange}
+		bind:value={birthdayInputString}
+	/>
+</form>
+
+<Calendar bind:selectedDate {events} />
+
+{#if eventOnSelectedDate}
+	<p class="text-primary-500">
+		You have a birthday on {eventOnSelectedDate.start.toLocaleDateString()}!
+	</p>
+{:else}
+	<p class="text-primary-500">No birthdays on this date.</p>
+{/if}
