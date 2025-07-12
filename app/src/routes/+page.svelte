@@ -2,9 +2,9 @@
 	import Calendar from '$lib/ui/Calendar.svelte';
 	import type { CalendarEvent } from '$lib/types/CalendarEvent';
 	import type { ChangeEventHandler } from 'svelte/elements';
-	import type { BinaryBirthdayData } from '$lib/types/BirthdayData';
 	import { isOnSameDay } from '$lib/util/date';
 	import { page } from '$app/state';
+	import type { BirthdayGenerationResult } from '$lib/types/BirthdayGenerator.js';
 
 	let { data } = $props();
 
@@ -12,18 +12,19 @@
 
 	let selectedDate: Date = $state(new Date());
 
-	let binaryBirthdayData: BinaryBirthdayData | null = $derived.by(() => {
-		return data.binaryBirthdayData;
+	let birthdayGenerationResult: BirthdayGenerationResult | null = $derived.by(() => {
+		return data.birthdayGenerationResult;
 	});
 
 	let events: CalendarEvent[] = $derived.by(() => {
-		if (!binaryBirthdayData) {
+		if (!birthdayGenerationResult) {
 			return [];
 		}
-		return binaryBirthdayData.birthdays.map((birthday) => {
+		return birthdayGenerationResult.birthdays.map((birthday) => {
 			return {
-				start: birthday,
-				title: birthday.toLocaleDateString()
+				start: birthday.date,
+				title: birthday.title!,
+				description: birthday.description
 			};
 		});
 	});
@@ -33,14 +34,14 @@
 	};
 
 	let eventOnSelectedDate: CalendarEvent | null = $derived.by(() => {
-		if (!binaryBirthdayData) {
+		if (!birthdayGenerationResult) {
 			return null;
 		}
 		return events.find((event) => isOnSameDay(event.start, selectedDate)) || null;
 	});
 </script>
 
-<form data-sveltekit-keepfocus>
+<form data-sveltekit-keepfocus class="m-4 flex items-center justify-center gap-x-8">
 	<label for="birthday">Select your birthday:</label>
 	<input
 		class="text-primary-500"
@@ -53,10 +54,17 @@
 
 <Calendar bind:selectedDate {events} />
 
-{#if eventOnSelectedDate}
-	<p class="text-primary-500">
-		You have a birthday on {eventOnSelectedDate.start.toLocaleDateString()}!
-	</p>
-{:else}
-	<p class="text-primary-500">No birthdays on this date.</p>
-{/if}
+<div class="m-4 flex flex-col items-center justify-center text-left">
+	<div>
+		{#if eventOnSelectedDate}
+			<p class="text-primary-500">
+				You have a {eventOnSelectedDate.title} on {eventOnSelectedDate.start.toLocaleDateString()}!
+			</p>
+			<p class="text-primary-500">
+				Description: {eventOnSelectedDate.description}
+			</p>
+		{:else}
+			<p class="text-primary-500">No birthdays on this date.</p>
+		{/if}
+	</div>
+</div>
