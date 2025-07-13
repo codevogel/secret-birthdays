@@ -1,16 +1,20 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
-import { BinaryBirthdayGenerator } from '$lib/types/BirthdayGenerator';
+import {
+	BirthdayType,
+	createBirthdayGenerator,
+	type BirthdayGenerationResult
+} from '$lib/types/BirthdayGenerator';
 
-export const GET: RequestHandler = async ({ params }) => {
-	const YYYY_MM_DD_REGEX: RegExp = /^\d{4}-\d{2}-(0[1-9]|1[0-2])$/;
-	const birthdayParam: string = params.birthday!;
-
-	if (!YYYY_MM_DD_REGEX.test(birthdayParam)) {
-		return json({ error: 'Invalid date format. Expected format: YYYY-MM-DD' });
+export const GET: RequestHandler = async ({ url, params }) => {
+	const birthday: Date = new Date(params.birthday!);
+	if (isNaN(birthday.getTime())) {
+		return json('Invalid birthday date format', { status: 400 });
 	}
 
-	const birthday = new Date(birthdayParam);
-	const binaryBirthdayGenerator = new BinaryBirthdayGenerator(birthday, 32 + 1);
-	return json(binaryBirthdayGenerator.generate());
+	const birthdayTypes: BirthdayType[] = url.searchParams.getAll('type') as BirthdayType[];
+	const birthdayGenerationResults: BirthdayGenerationResult[] = birthdayTypes.map((type) =>
+		createBirthdayGenerator(type, birthday).generate()
+	);
+	return json(birthdayGenerationResults);
 };

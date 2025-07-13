@@ -2,31 +2,39 @@
 	import Calendar from '$lib/ui/Calendar.svelte';
 	import type { CalendarEvent } from '$lib/types/CalendarEvent';
 	import type { ChangeEventHandler } from 'svelte/elements';
-	import { isOnSameDay } from '$lib/util/date';
 	import { page } from '$app/state';
-	import type { BirthdayGenerationResult } from '$lib/types/BirthdayGenerator';
+	import type { BirthdayGenerationResults } from '$lib/types/BirthdayGenerator';
 	import { BirthdayType } from '$lib/types/BirthdayGenerator';
+	import { isOnSameDay } from '$lib/util/date';
 
-	let { data }: { data: { birthdayGenerationResult: BirthdayGenerationResult | null } } = $props();
+	let { data }: { data: { birthdayGenerationResults: BirthdayGenerationResults | null } } =
+		$props();
 
 	let birthdayInputString: string = $state(page.url.searchParams.get('birthday') || '');
 
 	let selectedDate: Date = $state(new Date());
 
-	let birthdayGenerationResult: BirthdayGenerationResult | null = $derived.by(() => {
-		return data.birthdayGenerationResult;
+	let birthdayGenerationResults: BirthdayGenerationResults | null = $derived.by(() => {
+		return data.birthdayGenerationResults;
 	});
 
-	let events: CalendarEvent[] = $derived.by(
-		() =>
-			birthdayGenerationResult?.birthdays.map((birthday) => ({
-				start: birthday.date,
-				title: birthday.title!,
-				description: birthday.description
-			})) ?? []
-	);
+	let events: CalendarEvent[] = $derived.by(() => {
+		const events: CalendarEvent[] = [];
+		for (const result of birthdayGenerationResults || []) {
+			for (const birthday of result.birthdays) {
+				events.push({
+					title: birthday.title,
+					start: new Date(birthday.date),
+					description: birthday.description || ''
+				});
+			}
+		}
+		return events;
+	});
 
-	const onDateChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+	let form: HTMLFormElement;
+
+	const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
 		e.currentTarget.form?.requestSubmit();
 	};
 
@@ -35,14 +43,18 @@
 	);
 </script>
 
-<form data-sveltekit-keepfocus class="m-4 flex items-center justify-center gap-x-8">
+<form
+	data-sveltekit-keepfocus
+	class="m-4 flex items-center justify-center gap-x-8"
+	bind:this={form}
+>
 	<div class="flex flex-col">
 		<label for="birthday">Select your birthday:</label>
 		<input
 			class="text-primary-500"
 			type="date"
 			name="birthday"
-			onchange={onDateChange}
+			onchange={onChange}
 			bind:value={birthdayInputString}
 		/>
 	</div>
@@ -50,7 +62,14 @@
 		<span>Show birthday types:</span>
 		{#each Object.values(BirthdayType) as birthdayType (birthdayType)}
 			<label class="flex items-center space-x-2">
-				<input class="checkbox" type="checkbox" checked />
+				<input
+					class="checkbox"
+					type="checkbox"
+					checked
+					name="type"
+					value={birthdayType}
+					onchange={onChange}
+				/>
 				<p>{birthdayType}</p>
 			</label>
 		{/each}
