@@ -1,9 +1,10 @@
 <script lang="ts">
 	import Calendar from '$lib/ui/Calendar.svelte';
-	import type { CalendarEvent } from '$lib/types/CalendarEvent';
+	import type { CalendarEvent } from '$lib/types/Calendar';
 	import type { BirthdayGenerationResults } from '$lib/types/BirthdayGenerator';
 	import { isOnSameDay } from '$lib/util/date';
 	import BirthdayPicker from '$lib/ui/BirthdayPicker.svelte';
+	import TimeLine from '$lib/ui/TimeLine.svelte';
 
 	let { data }: { data: { birthdayGenerationResults: BirthdayGenerationResults | null } } =
 		$props();
@@ -52,3 +53,5 @@
 		{/if}
 	</div>
 </div>
+
+<TimeLine {events}/>
