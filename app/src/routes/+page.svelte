@@ -9,7 +9,6 @@
 	let { data }: { data: { birthdayGenerationResults: BirthdayGenerationResults | null } } =
 		$props();
 
-
 	let selectedDate: Date = $state(new Date());
 
 	let birthdayGenerationResults: BirthdayGenerationResults | null = $derived.by(() => {
@@ -22,7 +21,7 @@
 			for (const birthday of result.birthdays) {
 				events.push({
 					title: birthday.title,
-					start: new Date(birthday.date),
+					date: new Date(birthday.date),
 					description: birthday.description || ''
 				});
 			}
@@ -31,27 +30,30 @@
 	});
 
 	let eventOnSelectedDate: CalendarEvent | null = $derived.by(
-		() => events.find((event) => isOnSameDay(event.start, selectedDate)) || null
+		() => events.find((event) => isOnSameDay(event.date, selectedDate)) || null
 	);
 </script>
 
-<BirthdayPicker/>
+<div class="flex flex-col">
+	<BirthdayPicker />
 
-<Calendar bind:selectedDate {events} />
+	<Calendar bind:selectedDate {events} />
 
-<div class="m-4 flex flex-col items-center justify-center text-left">
-	<div>
-		{#if eventOnSelectedDate}
-			<p class="text-primary-500">
-				You have a {eventOnSelectedDate.title} on {eventOnSelectedDate.start.toLocaleDateString()}!
-			</p>
-			<p class="text-primary-500">
-				Description: {eventOnSelectedDate.description}
-			</p>
-		{:else}
-			<p class="text-primary-500">No birthdays on this date.</p>
-		{/if}
+	<div class="m-4 flex flex-col items-center justify-center text-left">
+		<div>
+			{#if eventOnSelectedDate}
+				<p class="text-primary-500">
+					You have a {eventOnSelectedDate.title} on {eventOnSelectedDate.date.toLocaleDateString()}!
+				</p>
+				<p class="text-primary-500">
+					Description: {eventOnSelectedDate.description}
+				</p>
+			{:else}
+				<p class="text-primary-500">No birthdays on this date.</p>
+			{/if}
+		</div>
 	</div>
 </div>
-
-<TimeLine {events}/>
+<div class="col-span-3">
+	<TimeLine {events} />
+</div>
