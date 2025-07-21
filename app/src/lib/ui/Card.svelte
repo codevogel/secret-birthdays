@@ -1,15 +1,14 @@
-
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
 	let {
-		base = 'card preset-filled-surface-100-900 border-surface-200-800 card-hover divide-surface-200-800 block h-fit max-w-md divide-y border-[1px]',
+		base = 'card flex flex-col gap-y-2 p-4 preset-filled-surface-100-900 border-surface-200-800 card-hover divide-surface-200-800 block h-fit max-w-md border-[1px]',
 		baseExtension = '',
-		headerBase = 'h3 p-8',
+		headerBase = 'font-bold',
 		headerExtension = '',
-		articleBase = 'flex flex-col gap-4 p-8',
+		articleBase = '',
 		articleExtension = '',
-		footerBase = 'flex items-center gap-4 p-8',
+		footerBase = '',
 		footerExtension = '',
 		header,
 		article,
