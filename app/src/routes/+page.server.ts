@@ -1,4 +1,4 @@
-import { BirthdayGenerationResultsSchema, BirthdayType } from '$lib/types/BirthdayGenerator';
+import { BirthdayGenerationResultsSchema } from '$lib/types/BirthdayGenerator';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ fetch, url }) => {
@@ -8,11 +8,10 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
 	}
 
 	try {
-		const fetchUrl = new URL('/api/' + birthdayParam, url.origin);
-		const searchParams = url.searchParams.getAll('type');
-		for (const type of searchParams) {
-			fetchUrl.searchParams.append('type', type);
-		}
+		const fetchUrl = new URL('/api', url.origin);
+      for (const [key, value] of url.searchParams.entries()) {
+         fetchUrl.searchParams.set(key, value);
+      }
       console.log('Fetching birthday generation results from:', fetchUrl.toString());
 		const res = await fetch(fetchUrl.toString());
 		const data = await res.json();
