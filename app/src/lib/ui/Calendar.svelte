@@ -111,18 +111,18 @@
 			<div class="text-center">Sat</div>
 			<div class="text-center">Sun</div>
 		</header>
-		<article class="text-surface-500 grid grid-cols-7 gap-2">
+		<article class="text-surface-400 grid grid-cols-7 gap-2">
 			{#each datesToShow as date, i (i)}
 				<button
 					class="relative aspect-square rounded-lg
                {isInSameMonth(date, selectedDate) ? '' : 'text-surface-700'} 
                {isOnSameDay(date, selectedDate) ? 'bg-primary-500' : ''}
-               {hasEvent(date) ? 'underline underline-offset-6' : ''}"
+               {hasEvent(date) ? 'text-surface-400 border-1 ' : ''}"
 					onclick={() => {
 						selectedDate = date;
 					}}
 				>
-					&nbsp;{date.toLocaleDateString(locale, { day: 'numeric' })}&nbsp;
+					{date.toLocaleDateString(locale, { day: 'numeric' })}
 				</button>
 			{/each}
 		</article>
