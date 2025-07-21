@@ -4,25 +4,21 @@
 
 	const types: BirthdayType[] = Object.values(BirthdayType);
 
-	let { onValidationChange }: { onValidationChange?: (valid: boolean) => void } = $props();
-
 	let birthdayInputString: string = $state(page.url.searchParams.get('birthday') || '');
-	let selectedTypes: BirthdayType[] = $state(page.url.searchParams.get('types')?.split(',') as BirthdayType[] ?? types);
+	let selectedTypes: BirthdayType[] = $state(
+		(page.url.searchParams.get('types')?.split(',') as BirthdayType[]) ?? types
+	);
 	let form: HTMLFormElement;
 
-	let satisfied: boolean = $derived(validateForm());
+	let { satisfied = $bindable(false) }: { satisfied: boolean } = $props();
 
 	$effect(() => {
-		onValidationChange?.(satisfied);
+		satisfied = birthdayInputString !== '' && selectedTypes.length > 0;
 	});
 
 	export function submitForm() {
 		form.requestSubmit();
 	}
-
-   function validateForm(): boolean {
-      return birthdayInputString !== '' && selectedTypes.length > 0;
-   };
 
 	function toggleType(type: BirthdayType) {
 		const index = selectedTypes.indexOf(type);
