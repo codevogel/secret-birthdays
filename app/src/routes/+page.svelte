@@ -1,63 +1,73 @@
 <script lang="ts">
 	import BirthdayPickerModal from '$lib/ui/BirthdayPickerModal.svelte';
 
-	// import Calendar from '$lib/ui/Calendar.svelte';
-	// import type { CalendarEvent } from '$lib/types/Calendar';
-	// import type { BirthdayGenerationResults } from '$lib/types/BirthdayGenerator';
-	// import { isOnSameDay } from '$lib/util/date';
-	// import BirthdayPicker from '$lib/ui/BirthdayPicker.svelte';
-	// import TimeLine from '$lib/ui/TimeLine.svelte';
-	//
-	// let { data }: { data: { birthdayGenerationResults: BirthdayGenerationResults | null } } =
-	// 	$props();
-	//
-	// let selectedDate: Date = $state(new Date());
-	//
-	// let birthdayGenerationResults: BirthdayGenerationResults | null = $derived.by(() => {
-	// 	return data.birthdayGenerationResults;
-	// });
-	//
-	// let events: CalendarEvent[] = $derived.by(() => {
-	// 	const events: CalendarEvent[] = [];
-	// 	for (const result of birthdayGenerationResults || []) {
-	// 		for (const birthday of result.birthdays) {
-	// 			events.push({
-	// 				title: birthday.title,
-	// 				date: new Date(birthday.date),
-	// 				description: birthday.description || ''
-	// 			});
-	// 		}
-	// 	}
-	// 	return events;
-	// });
-	//
-	// let eventOnSelectedDate: CalendarEvent | null = $derived.by(
-	// 	() => events.find((event) => isOnSameDay(event.date, selectedDate)) || null
-	// );
+	import Calendar from '$lib/ui/Calendar.svelte';
+	import type { CalendarEvent } from '$lib/types/Calendar';
+	import type { BirthdayGenerationResults } from '$lib/types/BirthdayGenerator';
+	import { isOnSameDay } from '$lib/util/date';
+	import TimeLine from '$lib/ui/TimeLine.svelte';
+	import CalendarTimeLineSwitch from '$lib/ui/CalendarTimeLineSwitch.svelte';
+
+	let { data }: { data: { birthdayGenerationResults: BirthdayGenerationResults | null } } =
+		$props();
+
+	let selectedDate: Date = $state(new Date());
+
+	let birthdayGenerationResults: BirthdayGenerationResults | null = $derived.by(() => {
+		return data.birthdayGenerationResults;
+	});
+
+	let events: CalendarEvent[] = $derived.by(() => {
+		const events: CalendarEvent[] = [];
+		for (const result of birthdayGenerationResults || []) {
+			for (const birthday of result.birthdays) {
+				events.push({
+					title: birthday.title,
+					date: new Date(birthday.date),
+					description: birthday.description || ''
+				});
+			}
+		}
+		return events;
+	});
+
+	let eventOnSelectedDate: CalendarEvent | null = $derived.by(
+		() => events.find((event) => isOnSameDay(event.date, selectedDate)) || null
+	);
+
+	let mode: 'calendar' | 'timeline' = $state('calendar');
 </script>
 
-<BirthdayPickerModal />
+<div class="grid min-h-full grid-cols-1 items-center p-4">
+	<div class="flex flex-row justify-between">
+		<BirthdayPickerModal />
+		<CalendarTimeLineSwitch bind:mode />
+	</div>
+	{#if birthdayGenerationResults}
+		{#if mode === 'calendar'}
+			<Calendar bind:selectedDate {events} />
 
-<!-- <div class="flex flex-col"> -->
-<!-- 	<BirthdayPicker /> -->
-<!---->
-<!-- 	<Calendar bind:selectedDate {events} /> -->
-<!---->
-<!-- 	<div class="m-4 flex flex-col items-center justify-center text-left"> -->
-<!-- 		<div> -->
-<!-- 			{#if eventOnSelectedDate} -->
-<!-- 				<p class="text-primary-500"> -->
-<!-- 					You have a {eventOnSelectedDate.title} on {eventOnSelectedDate.date.toLocaleDateString()}! -->
-<!-- 				</p> -->
-<!-- 				<p class="text-primary-500"> -->
-<!-- 					Description: {eventOnSelectedDate.description} -->
-<!-- 				</p> -->
-<!-- 			{:else} -->
-<!-- 				<p class="text-primary-500">No birthdays on this date.</p> -->
-<!-- 			{/if} -->
-<!-- 		</div> -->
-<!-- 	</div> -->
-<!-- </div> -->
-<!-- <div class="col-span-3"> -->
-<!-- 	<TimeLine {events} /> -->
-<!-- </div> -->
+			<div class="m-4 flex flex-col items-center justify-center text-left">
+				<div>
+					{#if eventOnSelectedDate}
+						<p class="text-primary-500">
+							You have a {eventOnSelectedDate.title} on {eventOnSelectedDate.date.toLocaleDateString()}!
+						</p>
+						<p class="text-primary-500">
+							Description: {eventOnSelectedDate.description}
+						</p>
+					{:else}
+						<p class="text-primary-500">You have no secret birthdays on this date.</p>
+						<p class="text-surface-300 text-[.75rem]">
+							Dates with secret birthdays are <span class="rounded-md border-1 p-1"
+								>bordered</span
+							>
+						</p>
+					{/if}
+				</div>
+			</div>
+		{:else}
+			<TimeLine {events} />
+		{/if}
+	{/if}
+</div>
