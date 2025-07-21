@@ -69,7 +69,8 @@
 			<TimeLine {events} />
 		{/if}
 	{:else}
-		<div class="grid max-w-md grid-cols-1 place-items-center gap-4 text-center">
+      <div class="grid grid-cols-1 place-items-center">
+		<div class="grid max-w-md grid-cols-1 gap-4 text-center">
 			<strong class="text-xl">Discover your secret birthdays!</strong>
 			<p>You’ve had more birthdays than you think.</p>
 			<p>
@@ -87,5 +88,6 @@
 			</p>
 			<BirthdayPickerModal />
 		</div>
+   </div>
 	{/if}
 </div>
