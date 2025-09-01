@@ -1,6 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Bahiana&display=swap');
+
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+@theme {
+   --font-logo: 'Bahiana', cursive;
+}
 
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton/optional/presets';
