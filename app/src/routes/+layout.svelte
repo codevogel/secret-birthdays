@@ -10,12 +10,12 @@
 	<!-- Header -->
 	<NavBar />
 	<!-- Grid Columns -->
-	<div class="grid grid-cols-1">
+	<div class="grid grid-rows-[1fr_auto] overflow-y-scroll" id="content-container">
 		<!-- Main Content -->
 		<main class="space-y-4">
 			{@render children()}
 		</main>
+		<Footer />
 	</div>
 	<!-- Footer -->
-	<Footer />
 </div>
