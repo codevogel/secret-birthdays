@@ -6,7 +6,7 @@
 
 	let birthdayInputString: string = $state(page.url.searchParams.get('birthday') || '');
 	let selectedTypes: BirthdayType[] = $state(
-		(page.url.searchParams.get('types')?.split(',') as BirthdayType[]) ?? types
+		(page.url.searchParams.get('types')?.split(',') as BirthdayType[]) ?? types.slice(1) 
 	);
 	let form: HTMLFormElement;
 
@@ -32,7 +32,7 @@
 
 <form
 	data-sveltekit-keepfocus
-	class="m-4 grid grid-cols-1 items-center justify-center gap-x-8"
+	class="m-4 grid grid-cols-1 items-center justify-center gap-x-8 gap-y-4"
 	bind:this={form}
 >
 	<div class="flex flex-col gap-2">
@@ -45,7 +45,7 @@
 		/>
 	</div>
 	<div class="grid grid-cols-1 gap-2">
-		<span>Show birthday types:</span>
+		<span>Filter birthday types:</span>
 		<div class="grid grid-flow-dense grid-cols-3 gap-2">
 			{#each types as type, i (i)}
 				<button

@@ -75,7 +75,7 @@
 	}
 </script>
 
-<div class="grid mx-4 max-w-xs grid-cols-1 py-4">
+<div class="mx-4 grid max-w-xs grid-cols-1 py-4">
 	<control class="text-primary-contrast-dark flex flex-row">
 		<div class="flex grow flex-row items-center justify-start gap-x-2">
 			<button class="btn-icon bg-primary-500 p-1" onclick={onPreviousYear}

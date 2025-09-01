@@ -8,6 +8,19 @@
    --font-logo: 'Bahiana', cursive;
 }
 
+@keyframes border-pulse {
+  0%, 100% {
+    border-color: rgb(var(--tw-border-opacity, 1) * var(--border-color));
+  }
+  50% {
+    border-color: transparent;
+  }
+}
+
+.animate-border-pulse {
+  animation: border-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton/optional/presets';
 @import '@skeletonlabs/skeleton/themes/cerberus';
